@@ -12,6 +12,8 @@ function UserDetail() {
   const [repos, setRepos] = useState<GitHubRepo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+  const [langFilter, setLangFilter] = useState("All");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,7 +26,7 @@ function UserDetail() {
         const userData = await userRes.json();
 
         const repoRes = await fetch(
-          `https://api.github.com/users/${username}/repos?sort=stars&per_page=6`,
+          `https://api.github.com/users/${username}/repos?sort=stars&per_page=20`,
         );
         const repoData = await repoRes.json();
 
@@ -39,6 +41,19 @@ function UserDetail() {
 
     fetchData();
   }, [username]);
+
+  const languages = [
+    "All",
+    ...Array.from(
+      new Set(repos.map((r) => r.language).filter(Boolean) as string[]),
+    ),
+  ];
+
+  const filteredRepos = repos.filter((repo) => {
+    const matchSearch = repo.name.toLowerCase().includes(search.toLowerCase());
+    const matchLang = langFilter === "All" || repo.language === langFilter;
+    return matchSearch && matchLang;
+  });
 
   if (loading)
     return (
@@ -73,15 +88,35 @@ function UserDetail() {
 
       {user && <UserCard user={user} />}
 
-      <h2 className="text-white font-bold text-xl mb-4 mt-8">
-        Top Repositories
-      </h2>
+      <h2 className="text-white font-bold text-xl mb-4 mt-8">Repositories</h2>
 
-      {repos.length === 0 ? (
-        <p className="text-gray-500">No public repositories found.</p>
+      {/* Search + Filter */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <input
+          type="text"
+          placeholder="Search repositories..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white placeholder:text-gray-500 outline-none focus:border-blue-500 transition-colors"
+        />
+        <select
+          value={langFilter}
+          onChange={(e) => setLangFilter(e.target.value)}
+          className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-blue-500 transition-colors"
+        >
+          {languages.map((lang) => (
+            <option key={lang} value={lang}>
+              {lang}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {filteredRepos.length === 0 ? (
+        <p className="text-gray-500">No repositories found.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {repos.map((repo) => (
+          {filteredRepos.map((repo) => (
             <RepoCard key={repo.id} repo={repo} />
           ))}
         </div>
