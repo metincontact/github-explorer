@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
 body {
-  background-color: #0d1117;
+  background-color: #050914;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: 28px 28px;
 }

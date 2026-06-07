@@ -1,3 +1,4 @@
+import { MapPin, ExternalLink, Globe, Users, BookOpen } from "lucide-react";
 import type { GitHubUser } from "../types";
 
 type UserCardProps = {
@@ -6,58 +7,74 @@ type UserCardProps = {
 
 function UserCard({ user }: UserCardProps) {
   return (
-    <div className="bg-gray-800 rounded-2xl p-6 flex gap-6 items-start border border-gray-700">
-      <img
-        src={user.avatar_url}
-        alt={user.login}
-        className="w-24 h-24 rounded-full border-2 border-gray-600"
-      />
+    <div className="relative rounded-2xl border border-white/[0.07] bg-white/[0.02] backdrop-blur-xl p-6 overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/40 to-transparent" />
+      <div className="pointer-events-none absolute -top-20 -right-20 w-60 h-60 rounded-full bg-violet-600/[0.06] blur-[60px]" />
 
-      <div className="flex-1">
-        <h2 className="text-white text-2xl font-bold">
-          {user.name || user.login}
-        </h2>
-        <p className="text-gray-400 text-sm mb-3">@{user.login}</p>
-
-        {user.bio && <p className="text-gray-300 text-sm mb-3">{user.bio}</p>}
-
-        <div className="flex gap-4 text-sm text-gray-400 mb-3">
-          <span>
-            <span className="text-white font-semibold">{user.followers}</span>{" "}
-            followers
-          </span>
-          <span>
-            <span className="text-white font-semibold">{user.following}</span>{" "}
-            following
-          </span>
-          <span>
-            <span className="text-white font-semibold">
-              {user.public_repos}
-            </span>{" "}
-            repos
-          </span>
+      <div className="relative flex gap-5 items-start">
+        <div className="shrink-0 p-[2px] rounded-full bg-gradient-to-br from-violet-500 via-indigo-500 to-fuchsia-500">
+          <img
+            src={user.avatar_url}
+            alt={user.login}
+            className="w-20 h-20 rounded-full block"
+          />
         </div>
 
-        <div className="flex gap-3 text-sm">
-          {user.location && (
-            <span className="text-gray-400">📍 {user.location}</span>
+        <div className="flex-1 min-w-0">
+          <h2 className="text-white text-xl font-bold truncate leading-tight">
+            {user.name || user.login}
+          </h2>
+          <p className="text-slate-500 text-sm mb-3 font-mono">@{user.login}</p>
+
+          {user.bio && (
+            <p className="text-slate-400 text-sm mb-4 leading-relaxed">{user.bio}</p>
           )}
-          {user.blog && (
+
+          <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm mb-4">
+            <span className="flex items-center gap-1.5 text-slate-400">
+              <Users className="w-3.5 h-3.5 text-slate-600" />
+              <span className="text-white font-semibold">{user.followers}</span>
+              <span className="text-slate-600">followers</span>
+            </span>
+            <span className="flex items-center gap-1.5 text-slate-400">
+              <span className="text-white font-semibold">{user.following}</span>
+              <span className="text-slate-600">following</span>
+            </span>
+            <span className="flex items-center gap-1.5 text-slate-400">
+              <BookOpen className="w-3.5 h-3.5 text-slate-600" />
+              <span className="text-white font-semibold">{user.public_repos}</span>
+              <span className="text-slate-600">repos</span>
+            </span>
+          </div>
+
+          <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs">
+            {user.location && (
+              <span className="flex items-center gap-1.5 text-slate-500">
+                <MapPin className="w-3.5 h-3.5" />
+                {user.location}
+              </span>
+            )}
+            {user.blog && (
+              <a
+                href={user.blog.startsWith("http") ? user.blog : `https://${user.blog}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-violet-400/80 hover:text-violet-300 transition-colors"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Website
+              </a>
+            )}
             <a
-              href={user.blog}
+              href={user.html_url}
               target="_blank"
-              className="text-blue-400 hover:underline"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-violet-400/80 hover:text-violet-300 transition-colors"
             >
-              🔗 Website
+              <Globe className="w-3.5 h-3.5" />
+              GitHub
             </a>
-          )}
-          <a
-            href={user.html_url}
-            target="_blank"
-            className="text-blue-400 hover:underline"
-          >
-            GitHub →
-          </a>
+          </div>
         </div>
       </div>
     </div>
